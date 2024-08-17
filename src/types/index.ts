@@ -25,7 +25,7 @@ export interface IItemsData {
 }
 
 export interface IUserData {
-  getUserInfo(): TUserPublic;
+  getUserInfo(): TUserModal;
   setUserInfo(userData: IUser): void;
 }
 
@@ -34,7 +34,5 @@ export type TItemPublic = Omit<IItem, 'id' | 'description'>;
 export type TItemModal = Omit<IItem, 'id'>;
 
 export type TItemBasket = Pick<IItem, 'title' | 'price'>;
-
-export type TUserPublic = Pick<IUser, 'items'>;
 
 export type TUserModal = Omit<IUser, 'items'>;
