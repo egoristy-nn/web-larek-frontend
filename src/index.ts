@@ -112,6 +112,9 @@ events.on('item:deleted', (data: { id: string, price: number}) => {
       items: orderList,
       total: appModel.getTotal()
     });
+    for (let i = 0; i < orderList.length; i++) {
+      orderList[i].querySelector('.basket__item-index').textContent = (i + 1).toString();
+    }
   }
   else {
     throw new Error('Данный товар отсутствует в корзине');
