@@ -1,10 +1,10 @@
-export interface IUser {
+export interface IUser extends IOrderForm, IContactsForm {
   payment: string;
   email: string;
   phone: string;
   address: string;
   total: number;
-  items: IItem[]
+  items: string[]
 }
 
 export interface IItem {
@@ -16,23 +16,27 @@ export interface IItem {
   price: number;
 }
 
-export interface IItemsData {
+export interface IOrderForm {
+  address?: string;
+  selected?: string
+}
+
+export interface IContactsForm {
+  email?: string;
+  phone?: string;
+}
+
+export interface IOrderResult {
+  id: string;
   total: number;
-  items: IItem[];
-  preview: string | null;
-  getItem(itemId: string): IItem;
-  updateItem(item: IItem, payload: Function | null): void;
 }
 
-export interface IUserData {
-  getUserInfo(): TUserModal;
-  setUserInfo(userData: IUser): void;
-}
-
-export type TItemPublic = Omit<IItem, 'id' | 'description'>;
+export type FormErrors = Partial<Record<keyof IUser, string>>;
 
 export type TItemModal = Omit<IItem, 'id'>;
 
-export type TItemBasket = Pick<IItem, 'title' | 'price'>;
-
-export type TUserModal = Omit<IUser, 'items'>;
+export type TItemBasket = {
+  index: string;
+  title: string;
+  price: string;
+};
