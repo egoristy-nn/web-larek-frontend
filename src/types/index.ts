@@ -17,13 +17,13 @@ export interface IItem {
 }
 
 export interface IOrderForm {
-  address?: string;
-  selected?: string
+  payment: string;
+  address: string;
 }
 
 export interface IContactsForm {
-  email?: string;
-  phone?: string;
+  email: string;
+  phone: string;
 }
 
 export interface IOrderResult {

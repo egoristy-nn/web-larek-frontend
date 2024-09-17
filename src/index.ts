@@ -88,7 +88,6 @@ events.on('item:added', (data: { id: string, price: number}) => {
   if (!appModel.getOrder().items.includes(data.id)) {
     appModel.addOrderItem(data.id);
     appModel.setTotal(data.price + appModel.getTotal());
-    console.log(appModel.getOrder())
     page.render({
       counter: appModel.getCounter()
     })
@@ -103,7 +102,6 @@ events.on('item:deleted', (data: { id: string, price: number}) => {
   if (appModel.getOrder().items.includes(data.id)) {
     appModel.deleteOrderItem(data.id);
     appModel.setTotal(appModel.getTotal() - data.price);
-    console.log(appModel.getOrder())
     const orderList = appModel.getOrder().items.map(item => new CardBasket(cloneTemplate(cardBasketTemplate), events).render(appModel.getItem(item)));
     page.render({
       counter: appModel.getCounter()
@@ -127,6 +125,7 @@ events.on('basket:submit', () => {
   modal.close();
   modal.render({
     content: order.render({
+      payment: '',
       address: '',
       valid: false,
       errors: []
@@ -138,13 +137,11 @@ events.on('basket:submit', () => {
 events.on('tab:selected', (data: { name: string }) => {
   if (data.name === 'card') {
     appModel.setPayment('card');
-    console.log(appModel.getOrder())
-    order.selected = 'card';
+    order.payment = 'card';
   }
   else {
     appModel.setPayment('cash');
-    console.log(appModel.getOrder())
-    order.selected = 'cash';
+    order.payment = 'cash';
   }
   
 })
@@ -152,7 +149,6 @@ events.on('tab:selected', (data: { name: string }) => {
 // отправлена форма адреса и способ оплаты
 events.on('order:submit', () => {
   appModel.setAddress(order.address);
-  console.log(appModel.getOrder())
   modal.close();
   modal.render({
     content: contacts.render({
@@ -168,7 +164,6 @@ events.on('order:submit', () => {
 events.on('contacts:submit', () => {
   appModel.setEmail(contacts.email);
   appModel.setPhone(contacts.phone);
-  console.log(appModel.getOrder())
   api.orderItems(appModel.getOrder())
   .then((res) => {
     modal.close();
@@ -190,20 +185,21 @@ events.on('contacts:submit', () => {
 // закрыть окно успешного заказа
 events.on('success:close', () => {
   modal.close();
+  events.emit(`catalog:changed`);
 })
 
 // изменилось состояние валидации поля адреса
 events.on('orderFormErrors:change', (errors: Partial<IOrderForm>) => {
-  const { address} = errors;
-  order.valid = !address;
-  order.errors = Object.values({address}).filter(i => !!i).join('; ');
+  const { payment, address } = errors;
+  order.valid = !payment && !address;
+  order.errors = Object.values({payment, address}).filter(i => !!i).join(', ');
 });
 
 // изменилось состояние валидации полей контактов
 events.on('contactsFormErrors:change', (errors: Partial<IContactsForm>) => {
   const {email, phone} = errors;
   contacts.valid = !email && !phone;
-  contacts.errors = Object.values({phone, email}).filter(i => !!i).join('; ');
+  contacts.errors = Object.values({phone, email}).filter(i => !!i).join(', ');
 });
 
 // Изменилось поле адреса

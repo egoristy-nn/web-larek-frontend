@@ -91,8 +91,11 @@ export class AppState {
 
   validateOrder() {
     const errors: typeof this.formErrors = {};
+    if (!this.order.payment) {
+        errors.payment = 'Необходимо выбрать способ оплаты';
+    }
     if (!this.order.address) {
-        errors.address = 'Необходимо указать адрес';
+        errors.address = 'Необходимо указать адрес доставки';
     }
     this.formErrors = errors;
     this.events.emit('orderFormErrors:change', this.formErrors);
