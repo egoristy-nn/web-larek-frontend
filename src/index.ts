@@ -113,6 +113,7 @@ events.on('item:deleted', (data: { id: string, price: number}) => {
     for (let i = 0; i < orderList.length; i++) {
       orderList[i].querySelector('.basket__item-index').textContent = (i + 1).toString();
     }
+    events.emit(`catalog:changed`);
   }
   else {
     throw new Error('Данный товар отсутствует в корзине');
@@ -176,6 +177,7 @@ events.on('contacts:submit', () => {
   page.render({
     counter: appModel.getCounter()
   })
+  events.emit(`catalog:changed`);
   })
   .catch(err => {
     console.error(err)
@@ -185,7 +187,6 @@ events.on('contacts:submit', () => {
 // закрыть окно успешного заказа
 events.on('success:close', () => {
   modal.close();
-  events.emit(`catalog:changed`);
 })
 
 // изменилось состояние валидации поля адреса
